@@ -1,0 +1,22 @@
+{exec} = require 'child_process'
+fs = require 'fs'
+sys = require 'sys'
+
+task 'docs', 'rebuild documentation', ->
+  fs.readdir '.', (err, files) ->
+    throw err if err
+    files.forEach (file) ->
+      dot = file.lastIndexOf('.')
+      extname = file.substr (dot + 1)
+      return unless extname in ['h', 'cpp']
+      basename = file.substr 0, dot
+      return unless /^[A-Za-z]/.test basename
+      slash = basename.lastIndexOf '/'
+      if slash != -1
+        basename = basename.substr (slash + 1)
+      exec([
+        "docco #{file}", 
+        "mv docs/#{basename}.html docs/#{basename}_#{extname}.html"
+      ].join(' && '), (err) ->
+        throw err if err
+      )

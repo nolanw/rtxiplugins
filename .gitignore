@@ -1,0 +1,7 @@
+*.l[ao]
+*.o
+moc_*
+docs
+.svn
+.deps
+.libs
