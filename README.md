@@ -21,7 +21,7 @@ I wrote a few plugins for [RTXI](http://rtxi.org). Here they are for the world t
   * **ramp**
     A signal that ramps up controllably randomly.
   
-  * **RealFIR**
+  * **realfir**
     A finite impulse response filter that doesn't crash.
     
     Requires [boost circular_buffer](http://www.boost.org/doc/libs/1_40_0/libs/circular_buffer/doc/circular_buffer.html)
