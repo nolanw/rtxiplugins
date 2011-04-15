@@ -15,9 +15,6 @@ I wrote a few plugins for [RTXI](http://rtxi.org). Here they are for the world t
   * **noise**
     Make random noise.
   
-  * **oscilloscope**
-    Very slightly modified from the original so there's no windup time.
-  
   * **ramp**
     A signal that ramps up controllably randomly.
   
