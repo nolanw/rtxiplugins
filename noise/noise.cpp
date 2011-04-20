@@ -29,6 +29,11 @@ extern "C" Plugin::Object *createRTXIPlugin(void) {
 
 static DefaultGUIModel::variable_t vars[] = {
     {
+        "Cutoff in",
+        "When this is non-zero, output nothing.",
+        DefaultGUIModel::INPUT,
+    },
+    {
         "Vout",
         "Output noise",
         DefaultGUIModel::OUTPUT,
@@ -75,7 +80,10 @@ Noise::~Noise(void) {}
 
 void Noise::execute(void) {
     age += dt_ms;
-    if (age - lastChange >= period) {
+    if (input(0) != 0.0) {
+      output(0) = 0.0;
+    }
+    else if (age - lastChange >= period) {
         output(0) = ((double)rand() * (halfAmplitude * 2)) / 
                     (double)RAND_MAX - halfAmplitude + offset;
         lastChange = age;
