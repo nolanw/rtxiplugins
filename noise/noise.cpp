@@ -23,8 +23,8 @@ extern "C" Plugin::Object *createRTXIPlugin(void) {
     return new Noise();
 }
 
-#define PARAM_MINIMUM_OUTPUT "Vmin"
-#define PARAM_MAXIMUM_OUTPUT "Vmax"
+#define PARAM_HALF_AMPLITUDE "Half amplitude (V)"
+#define PARAM_OFFSET "Offset (V)"
 #define PARAM_OUTPUT_RATE "Output rate (Hz)"
 
 static DefaultGUIModel::variable_t vars[] = {
@@ -34,13 +34,13 @@ static DefaultGUIModel::variable_t vars[] = {
         DefaultGUIModel::OUTPUT,
     },
     {
-        PARAM_MINIMUM_OUTPUT,
-        "Minimum output (V)",
+        PARAM_HALF_AMPLITUDE,
+        "Half the amplitude of the noise (i.e. the mean)",
         DefaultGUIModel::PARAMETER | DefaultGUIModel::DOUBLE,
     },
     {
-        PARAM_MAXIMUM_OUTPUT,
-        "Maximum output (V)",
+        PARAM_OFFSET,
+        "Offset the entire output by this much",
         DefaultGUIModel::PARAMETER | DefaultGUIModel::DOUBLE,
     },
     {
@@ -59,9 +59,9 @@ Noise::Noise(void)
      */
     update(PERIOD);
     
-    Vmin = 0.0; setParameter(PARAM_MINIMUM_OUTPUT, Vmin);
-    Vmax = 5.0; setParameter(PARAM_MAXIMUM_OUTPUT, Vmax);
-    period = 20.0; setParameter(PARAM_OUTPUT_RATE, 1000.0 / period);
+    halfAmplitude = 0.5; setParameter(PARAM_HALF_AMPLITUDE, halfAmplitude);
+    offset = 0.0; setParameter(PARAM_OFFSET, offset);
+    period = 1.0; setParameter(PARAM_OUTPUT_RATE, 1000.0 / period);
     lastChange = 0.0;
     age = 0.0;
     update(MODIFY);
@@ -76,7 +76,8 @@ Noise::~Noise(void) {}
 void Noise::execute(void) {
     age += dt_ms;
     if (age - lastChange >= period) {
-        output(0) = ((double)rand() * (Vmax - Vmin)) / (double)RAND_MAX + Vmin;
+        output(0) = ((double)rand() * (halfAmplitude * 2)) / 
+                    (double)RAND_MAX - halfAmplitude + offset;
         lastChange = age;
     }
 }
@@ -84,8 +85,8 @@ void Noise::execute(void) {
 void Noise::update(DefaultGUIModel::update_flags_t flag) {
     switch (flag) {
         case MODIFY:
-            Vmin = getParameter(PARAM_MINIMUM_OUTPUT).toDouble();
-            Vmax = getParameter(PARAM_MAXIMUM_OUTPUT).toDouble();
+            halfAmplitude = getParameter(PARAM_HALF_AMPLITUDE).toDouble();
+            offset = getParameter(PARAM_OFFSET).toDouble();
             period = 1000.0 / getParameter(PARAM_OUTPUT_RATE).toDouble();
             break;
         case PAUSE:

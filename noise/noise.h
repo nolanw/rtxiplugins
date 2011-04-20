@@ -37,8 +37,8 @@ private:
     double dt_ms;
     double age;
     double lastChange;
-    double Vmin;
-    double Vmax;
+    double halfAmplitude;
+    double offset;
     double period;
 
 };
